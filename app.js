@@ -6,7 +6,7 @@ const Manager = require("./lib/Manager.js");
 const Engineer = require("./lib/Engineer.js");
 const Intern = require("./lib/Intern.js");
 const fs = require("fs");
-
+const teamArray = [];
 
 /////////
 // Run //
@@ -15,38 +15,42 @@ const fs = require("fs");
 init();
 
 async function init() {
-  try {
-    let empSpecificData;
-    let { name } = await promptName();
-    name = capWords(name);
-    let { id } = await promptId();
-    let { email } = await promptEmail();
-    let { role } = await promptRole();
-    switch (role) {
-      case "Manager":
-        empSpecificData = await promptOfficeNum();
-        let manager = new Manager(name, id, email, empSpecificData);
-        return manager;
-      case "Engineer":
-        empSpecificData = await promptGithub();
-        let engineer = new Engineer(name, id, email, empSpecificData);
-        return engineer;
-      case "Intern":
-        empSpecificData = await promptSchool();
-        let intern = new Intern(name, id, email, empSpecificData);
-        return intern;
+  let addAnother = "Yes.";
+  do{
+    try {
+      let empSpecificData;
+      let { name } = await promptName();
+      name = capWords(name);
+      let { id } = await promptId();
+      let { email } = await promptEmail();
+      let { role } = await promptRole();
+      switch (role) {
+        case "Manager":
+          empSpecificData = await promptOfficeNum();
+          let manager = new Manager(name, id, email, empSpecificData.officeNum);
+          teamArray.push(manager);
+          break;
+        case "Engineer":
+          empSpecificData = await promptGithub();
+          let engineer = new Engineer(name, id, email, empSpecificData.username);
+          teamArray.push(engineer);
+          break;
+        case "Intern":
+          empSpecificData = await promptSchool();
+          let intern = new Intern(name, id, email, empSpecificData.school);
+          teamArray.push(intern);
+          break;
+      }
+      addAnother = await addEmp();
+      console.log(addAnother)
+      console.log(teamArray);
+    } catch (err) {
+      console.log(err);
     }
+  } 
+  while(addAnother.result === "Yes.");
 
-    //   let { username } = await promptName();
-    //   let htmlGen = generateHTML(profile.data);
-    //   writeFileAsync(`${username}.html`, htmlGen).then(function() {
-    //     console.log("File Created.");
-    //     pdfGen(htmlGen, username)
-    //   });
-    console.log(manager, engineer, intern);
-  } catch (err) {
-    console.log(err);
-  }
+
 }
 
 //////////////////////
@@ -120,6 +124,16 @@ function promptSchool() {
       });
       return school;
 }
+
+function addEmp() {
+  const result = inquirer.prompt({
+    type: 'list',
+    name: 'result',
+    message: 'Add another Employee?',
+    choices: ["Yes.", "No."]
+  });
+  return result;
+}
 //////////////////////////////////
 // Validate or format functions //
 //////////////////////////////////
@@ -133,3 +147,9 @@ function capWords(str) {
   }
   return splitStr.join(" ");
 }
+      //   let { username } = await promptName();
+      //   let htmlGen = generateHTML(profile.data);
+      //   writeFileAsync(`${username}.html`, htmlGen).then(function() {
+      //     console.log("File Created.");
+      //     pdfGen(htmlGen, username)
+      //   });
