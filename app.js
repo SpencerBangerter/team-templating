@@ -5,9 +5,10 @@ const inquirer = require("inquirer");
 const Manager = require("./lib/Manager.js");
 const Engineer = require("./lib/Engineer.js");
 const Intern = require("./lib/Intern.js");
+const htmlGen = require("./html/generateHtml.js");
 const fs = require("fs");
 const teamArray = [];
-
+let teamCardsHtml = "";
 /////////
 // Run //
 /////////
@@ -27,7 +28,7 @@ async function init() {
       switch (role) {
         case "Manager":
           empSpecificData = await promptOfficeNum();
-          let manager = new Manager(name, id, email, empSpecificData.officeNum);
+          let manager = new Manager(name, id, email, empSpecificData.officeNumber);
           teamArray.push(manager);
           break;
         case "Engineer":
@@ -42,13 +43,17 @@ async function init() {
           break;
       }
       addAnother = await addEmp();
-      console.log(addAnother)
-      console.log(teamArray);
     } catch (err) {
       console.log(err);
     }
   } 
   while(addAnother.result === "Yes.");
+  // HTML GEN
+  for (var i=0; i<teamArray.length; i++) {
+    let card = htmlGen.cardGen(teamArray[i]);
+    teamCardsHtml += card;
+  }
+  let finalHTML = htmlGen.htmlGen(teamCardsHtml);
 
 
 }
@@ -97,12 +102,12 @@ function promptRole() {
 //Manager Prompt
 
 function promptOfficeNum() {
-  const officeNum = inquirer.prompt({
+  const officeNumber = inquirer.prompt({
     type: "input",
     message: "What is the Manager's office number?",
     name: "officeNumber"
   });
-  return officeNum;
+  return officeNumber;
 }
 
 //Engineer Prompt
