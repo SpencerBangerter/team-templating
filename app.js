@@ -7,6 +7,8 @@ const Engineer = require("./lib/Engineer.js");
 const Intern = require("./lib/Intern.js");
 const htmlGen = require("./html/generateHtml.js");
 const fs = require("fs");
+const util = require("util");
+const writeFileAsync = util.promisify(fs.writeFile);
 const teamArray = [];
 let teamCardsHtml = "";
 /////////
@@ -54,8 +56,7 @@ async function init() {
     teamCardsHtml += card;
   }
   let finalHTML = htmlGen.htmlGen(teamCardsHtml);
-
-
+  writeFileAsync(`./output/team.html`, finalHTML)
 }
 
 //////////////////////
@@ -92,7 +93,7 @@ function promptEmail() {
 function promptRole() {
   const role = inquirer.prompt({
     type: "list",
-    message: "What is the new Employee's company email?",
+    message: "What is the new Employee's role?",
     name: "role",
     choices: ["Manager", "Engineer", "Intern"]
   });
