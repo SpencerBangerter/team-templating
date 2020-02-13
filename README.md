@@ -22,3 +22,8 @@ The options for employee types are "Manager", "Engineer", and "Intern". Follow t
 
 ### Exapmle Output
 
+
+![Screenshot of CLI app](https://github.com/SpencerBangerter/team-templating/blob/master/images/cli.png)
+
+
+![Screenshot of Exapmle HTML](https://github.com/SpencerBangerter/team-templating/blob/master/images/html.png)
